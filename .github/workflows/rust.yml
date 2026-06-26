@@ -1,4 +1,4 @@
-name: Release
+name: CI Build
 
 on:
   push:
@@ -9,9 +9,6 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-Dwarnings"
-
-permissions:
-  contents: write
 
 jobs:
   check:
@@ -104,42 +101,24 @@ jobs:
         run: |
           echo "=== target/release ==="
           ls -la target/release
-      
+
           if [ "${{ runner.os }}" == "Windows" ]; then
             BIN=$(ls target/release | grep '^pumpkin-ui\.exe$' || true)
           else
             BIN=$(ls target/release | grep '^pumpkin-ui$' || true)
           fi
-      
+
           if [ -z "$BIN" ]; then
             echo "ERROR: binary not found"
             ls target/release
             exit 1
           fi
-      
+
           echo "BIN=$BIN" >> $GITHUB_ENV
           echo "Detected: $BIN"
-      
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
           path: target/release/${{ env.BIN }}
-
-  release:
-    name: GitHub Release
-    needs: build
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-          merge-multiple: true
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: artifacts/*

@@ -5,7 +5,7 @@ use crate::state::AppState;
 use crate::theme;
 use crate::widgets;
 
-pub fn dashboard<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+pub fn dashboard<'a>(state: &'a AppState, app: &'a mut haven::PaneStat) -> View<'a, AppState> {
     layout::app_shell(state, app)
 }
 

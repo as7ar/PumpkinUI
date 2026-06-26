@@ -4,7 +4,7 @@ use crate::error::{PumpkinError, Result};
 use crate::model::PumpkinConfig;
 use crate::util::{read_text, write_text};
 
-pub const CONFIG_FILE_NAME: &str = "pumpkin.toml";
+pub const CONFIG_FILE_NAME: &str = "pumpkin-ui.toml";
 
 pub fn config_path(base_directory: impl AsRef<Path>) -> PathBuf {
     base_directory.as_ref().join(CONFIG_FILE_NAME)

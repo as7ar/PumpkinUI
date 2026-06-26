@@ -1,0 +1,8 @@
+[package]
+name = "pumpkin-ui"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+haven.workspace = true
+core = { path = "../core" }

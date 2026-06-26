@@ -5,7 +5,7 @@ use crate::state::AppState;
 use crate::theme;
 use crate::widgets;
 
-pub fn app_shell<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+pub fn app_shell<'a>(state: &'a AppState, app: &'a mut PaneState) -> View<'a, AppState> {
     stack(vec![
         rect(id!()).fill(theme::BACKGROUND).build(app).expand(),
         scroller(
@@ -16,17 +16,17 @@ pub fn app_shell<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppSt
                     return None;
                 }
 
-                Some(
-                    row_spaced(
-                        18.,
-                        vec![
-                            sidebar(state, ctx).width(320.),
-                            pages::dashboard_body(state, ctx).expand(),
-                        ],
-                    )
-                    .pad(20.)
-                    .align(Align::Top),
+                let content = row_spaced(
+                    18.,
+                    vec![
+                        sidebar(state, ctx).width(320.),
+                        pages::dashboard_body(state, ctx).expand(),
+                    ],
                 )
+                .pad(20.)
+                .align(Align::Top);
+
+                Some(content)
             },
             app,
         )

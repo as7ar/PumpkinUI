@@ -9,7 +9,7 @@ pub fn dashboard<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppSt
     layout::app_shell(state, app)
 }
 
-pub fn dashboard_body<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+pub fn dashboard_body<'a>(state: &'a AppState, app: &'a mut PaneState) -> View<'a, AppState> {
     let content = column_spaced(
         18.,
         vec![

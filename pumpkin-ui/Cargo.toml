@@ -5,4 +5,4 @@ edition.workspace = true
 
 [dependencies]
 haven.workspace = true
-core = { path = "../core" }
+pumpkin-core = { path = "../pumpkin-core" }

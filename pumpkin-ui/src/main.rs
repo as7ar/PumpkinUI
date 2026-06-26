@@ -1,1 +1,10 @@
-fn main() {}
+mod app;
+mod layout;
+mod pages;
+mod state;
+mod theme;
+mod widgets;
+
+fn main() {
+    app::run();
+}

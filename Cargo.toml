@@ -1,10 +1,10 @@
 [workspace.package]
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [workspace.dependencies]
-haven-ui = "0.1.0"
+haven = { package = "haven-ui", version = "0.1.0" }
 
 [workspace]
 resolver = "2"
-members = ["core","pumpkin-ui"]
+members = ["pumpkin-core", "pumpkin-ui"]

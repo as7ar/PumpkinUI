@@ -305,11 +305,26 @@ fn spawn_reader(
     output: ServerStream,
 ) {
     thread::spawn(move || {
-        let reader = BufReader::new(stream);
-        for line in reader.lines() {
-            let Ok(line) = line else {
-                break;
+        let mut reader = BufReader::new(stream);
+        let mut buffer = Vec::new();
+        loop {
+            buffer.clear();
+            let read = match reader.read_until(b'\n', &mut buffer) {
+                Ok(read) => read,
+                Err(_) => break,
             };
+            if read == 0 {
+                break;
+            }
+
+            if matches!(buffer.last(), Some(b'\n')) {
+                let _ = buffer.pop();
+            }
+            if matches!(buffer.last(), Some(b'\r')) {
+                let _ = buffer.pop();
+            }
+
+            let line = String::from_utf8_lossy(&buffer).to_string();
 
             let mut inner = controller.lock().expect("server controller poisoned");
             if inner.active_pid != Some(pid) {

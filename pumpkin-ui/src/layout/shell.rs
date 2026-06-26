@@ -8,15 +8,29 @@ use crate::widgets;
 pub fn app_shell<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
     stack(vec![
         rect(id!()).fill(theme::BACKGROUND).build(app).expand(),
-        row_spaced(
-            18.,
-            vec![
-                sidebar(state, app).width(320.),
-                pages::dashboard_body(state, app).expand(),
-            ],
+        scroller(
+            id!(),
+            None,
+            move |index, _, ctx| {
+                if index != 0 {
+                    return None;
+                }
+
+                Some(
+                    row_spaced(
+                        18.,
+                        vec![
+                            sidebar(state, ctx).width(320.),
+                            pages::dashboard_body(state, ctx).expand(),
+                        ],
+                    )
+                    .pad(20.)
+                    .align(Align::Top),
+                )
+            },
+            app,
         )
-        .pad(20.)
-        .align(Align::Top),
+        .expand(),
     ])
 }
 
@@ -67,13 +81,13 @@ fn actions<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
         vec![
             button(id!(), binding!(state.start_button))
                 .text_label("Start")
-                .on_click(|state, _| state.start_server())
+                .on_click(|state, app| state.start_server(app))
                 .build(app)
                 .expand_x()
                 .height(38.),
             button(id!(), binding!(state.stop_button))
                 .text_label("Stop")
-                .on_click(|state, _| state.stop_server())
+                .on_click(|state, app| state.stop_server(app))
                 .build(app)
                 .expand_x()
                 .height(38.),

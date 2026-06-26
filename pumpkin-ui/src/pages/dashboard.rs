@@ -74,7 +74,7 @@ fn config_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppS
                     widgets::field_card(
                         "Server directory",
                         text_field(id!(), binding!(state.server_directory))
-                            .hint_text("Folder with server.jar")
+                            .hint_text("Server working directory")
                             .align(Alignment::Start)
                             .build(app)
                             .height(42.),
@@ -84,7 +84,7 @@ fn config_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppS
                     widgets::field_card(
                         "Executable",
                         text_field(id!(), binding!(state.executable))
-                            .hint_text("java")
+                            .hint_text(default_executable_hint())
                             .align(Alignment::Start)
                             .build(app)
                             .height(42.),
@@ -107,13 +107,13 @@ fn config_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppS
                 vec![
                     button(id!(), binding!(state.save_button))
                         .text_label("Save config")
-                        .on_click(|state, _| state.save_config())
+                        .on_click(|state, app| state.save_config(app))
                         .build(app)
                         .height(38.)
                         .width(132.),
                     button(id!(), binding!(state.refresh_button))
                         .text_label("Refresh")
-                        .on_click(|state, _| state.reload_logs())
+                        .on_click(|state, app| state.reload_logs(app))
                         .build(app)
                         .height(38.)
                         .width(102.),
@@ -178,4 +178,26 @@ fn log_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppStat
             .height(320.),
         ],
     )
+}
+
+fn default_executable_hint() -> &'static str {
+    #[cfg(target_os = "windows")]
+    {
+        "pumpkin-X64-Windows.exe"
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        "pumpkin-X64-macOS"
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        "pumpkin-X64-Linux"
+    }
+
+    #[cfg(not(any(target_os = "windows", target_os = "macos", target_os = "linux")))]
+    {
+        "pumpkin-X64-Windows.exe"
+    }
 }

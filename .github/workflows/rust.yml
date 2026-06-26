@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - "main"
   workflow_dispatch:
 
 env:
@@ -102,16 +102,24 @@ jobs:
       - name: Detect binary
         shell: bash
         run: |
-          BIN=$(ls target/release | grep '^pumpkin-ui$' || true)
-
+          echo "=== target/release ==="
+          ls -la target/release
+      
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            BIN=$(ls target/release | grep '^pumpkin-ui\.exe$' || true)
+          else
+            BIN=$(ls target/release | grep '^pumpkin-ui$' || true)
+          fi
+      
           if [ -z "$BIN" ]; then
             echo "ERROR: binary not found"
+            ls target/release
             exit 1
           fi
-
+      
           echo "BIN=$BIN" >> $GITHUB_ENV
           echo "Detected: $BIN"
-
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

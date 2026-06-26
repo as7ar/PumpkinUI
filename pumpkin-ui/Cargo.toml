@@ -6,3 +6,6 @@ edition.workspace = true
 [dependencies]
 haven.workspace = true
 pumpkin-core = { path = "../pumpkin-core" }
+
+[[bin]]
+name = "pumpkin-ui"

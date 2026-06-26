@@ -8,6 +8,3 @@ haven = { package = "haven-ui", version = "0.1.0" }
 [workspace]
 resolver = "2"
 members = ["pumpkin-core", "pumpkin-ui"]
-
-[[bin]]
-name = "pumpkin-ui"

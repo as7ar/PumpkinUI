@@ -99,14 +99,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p dist
-          cp target/release/YOUR_BINARY${{ matrix.exe }} \
-            dist/YOUR_BINARY-${{ matrix.artifact }}${{ matrix.exe }}
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.artifact }}
-          path: dist/*
+          ls target/release
+          BIN="pumpkin-ui"
+          cp target/release/$BIN${{ matrix.exe }} \
+            dist/$BIN-${{ matrix.artifact }}${{ matrix.exe }}
 
   release:
     name: GitHub Release

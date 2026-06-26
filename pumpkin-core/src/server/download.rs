@@ -54,24 +54,24 @@ pub fn ensure_executable(path: &Path) -> Result<()> {
 fn executable_url(path: &Path) -> Option<&'static str> {
     let file_name = path.file_name()?.to_str()?;
     match (std::env::consts::OS, std::env::consts::ARCH, file_name) {
-        ("windows", "x86_64", "pumpkin-X64-Windows.exe") => Some(
-            "https://github.com/Pumpkin-MC/Pumpkin/releases/download/nightly/pumpkin-X64-Windows.exe",
-        ),
-        ("windows", "aarch64", "pumpkin-ARM64-Windows.exe") => Some(
-            "https://github.com/Pumpkin-MC/Pumpkin/releases/download/nightly/pumpkin-ARM64-Windows.exe",
-        ),
-        ("macos", "x86_64", "pumpkin-X64-macOS") => Some(
-            "https://github.com/Pumpkin-MC/Pumpkin/releases/download/nightly/pumpkin-X64-macOS",
-        ),
-        ("macos", "aarch64", "pumpkin-ARM64-macOS") => Some(
-            "https://github.com/Pumpkin-MC/Pumpkin/releases/download/nightly/pumpkin-ARM64-macOS",
-        ),
-        ("linux", "x86_64", "pumpkin-X64-Linux") => Some(
-            "https://github.com/Pumpkin-MC/Pumpkin/releases/download/nightly/pumpkin-X64-Linux",
-        ),
-        ("linux", "aarch64", "pumpkin-ARM64-Linux") => Some(
-            "https://github.com/Pumpkin-MC/Pumpkin/releases/download/nightly/pumpkin-ARM64-Linux",
-        ),
+        ("windows", "x86_64", "pumpkin-X64-Windows.exe") => {
+            Some(&format!("{}/pumpkin-X64-Windows.exe", NIGHTLY_BASE_URL))
+        }
+        ("windows", "aarch64", "pumpkin-ARM64-Windows.exe") => {
+            Some(&format!("{}/pumpkin-ARM64-Windows.exe", NIGHTLY_BASE_URL))
+        }
+        ("macos", "x86_64", "pumpkin-X64-macOS") => {
+            Some(&format!("{}/pumpkin-X64-macOS", NIGHTLY_BASE_URL))
+        }
+        ("macos", "aarch64", "pumpkin-ARM64-macOS") => {
+            Some(&format!("{}/pumpkin-ARM64-macOS", NIGHTLY_BASE_URL))
+        }
+        ("linux", "x86_64", "pumpkin-X64-Linux") => {
+            Some(&format!("{}/pumpkin-X64-Linux", NIGHTLY_BASE_URL))
+        }
+        ("linux", "aarch64", "pumpkin-ARM64-Linux") => {
+            Some(&format!("{}/pumpkin-ARM64-Linux", NIGHTLY_BASE_URL))
+        }
         _ => None,
     }
 }

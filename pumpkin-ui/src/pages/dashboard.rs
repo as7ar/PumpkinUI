@@ -9,7 +9,10 @@ pub fn dashboard<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppSt
     layout::app_shell(state, app)
 }
 
-pub fn dashboard_body<'a>(state: &'a AppState, app: &'a mut PaneState) -> View<'a, AppState> {
+pub fn dashboard_body<'a>(
+    state: &'a AppState,
+    app: &'a mut PaneState,
+) -> View<'a, AppState> {
     scroller(
         id!(),
         None,
@@ -18,30 +21,29 @@ pub fn dashboard_body<'a>(state: &'a AppState, app: &'a mut PaneState) -> View<'
                 return None;
             }
 
-            Some(
-                row_spaced(
-                    18.,
-                    vec![
-                        widgets::card(ctx),
-                        column_spaced(
-                            16.,
-                            vec![
-                                header(state, ctx),
-                                config_section(state, ctx),
-                                runtime_section(state, ctx),
-                                log_section(state, ctx),
-                            ],
-                        )
-                        .pad(16.),
-                    ],
-                )
-                .align(Align::Top),
+            let content = row_spaced(
+                18.,
+                vec![
+                    widgets::card(ctx),
+                    column_spaced(
+                        16.,
+                        vec![
+                            header(state, ctx),
+                            config_section(state, ctx),
+                            runtime_section(state, ctx),
+                            log_section(state, ctx),
+                        ],
+                    )
+                    .pad(16.),
+                ],
             )
+            .align(Align::Top);
+
+            Some(content)
         },
         app,
     )
 }
-
 fn header<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
     let snapshot = state.controller.status();
     row_spaced(

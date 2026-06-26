@@ -57,7 +57,7 @@ impl AppState {
                 .as_ref()
                 .map(|_| "Config load failed".to_string())
                 .unwrap_or_else(|| ServerStatus::Stopped.label().to_string()),
-            error_message,
+            error_message: error_message.clone(),
             start_button: ButtonState::default(),
             stop_button: ButtonState::default(),
             save_button: ButtonState::default(),

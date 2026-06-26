@@ -51,27 +51,20 @@ pub fn ensure_executable(path: &Path) -> Result<()> {
     Ok(())
 }
 
-fn executable_url(path: &Path) -> Option<&'static str> {
+fn executable_url(path: &Path) -> Option<String> {
     let file_name = path.file_name()?.to_str()?;
-    match (std::env::consts::OS, std::env::consts::ARCH, file_name) {
-        ("windows", "x86_64", "pumpkin-X64-Windows.exe") => {
-            Some(&format!("{}/pumpkin-X64-Windows.exe", NIGHTLY_BASE_URL))
-        }
-        ("windows", "aarch64", "pumpkin-ARM64-Windows.exe") => {
-            Some(&format!("{}/pumpkin-ARM64-Windows.exe", NIGHTLY_BASE_URL))
-        }
-        ("macos", "x86_64", "pumpkin-X64-macOS") => {
-            Some(&format!("{}/pumpkin-X64-macOS", NIGHTLY_BASE_URL))
-        }
-        ("macos", "aarch64", "pumpkin-ARM64-macOS") => {
-            Some(&format!("{}/pumpkin-ARM64-macOS", NIGHTLY_BASE_URL))
-        }
-        ("linux", "x86_64", "pumpkin-X64-Linux") => {
-            Some(&format!("{}/pumpkin-X64-Linux", NIGHTLY_BASE_URL))
-        }
-        ("linux", "aarch64", "pumpkin-ARM64-Linux") => {
-            Some(&format!("{}/pumpkin-ARM64-Linux", NIGHTLY_BASE_URL))
-        }
-        _ => None,
-    }
+
+    let base = NIGHTLY_BASE_URL;
+
+    let suffix = match (std::env::consts::OS, std::env::consts::ARCH, file_name) {
+        ("windows", "x86_64", "pumpkin-X64-Windows.exe") => "pumpkin-X64-Windows.exe",
+        ("windows", "aarch64", "pumpkin-ARM64-Windows.exe") => "pumpkin-ARM64-Windows.exe",
+        ("macos", "x86_64", "pumpkin-X64-macOS") => "pumpkin-X64-macOS",
+        ("macos", "aarch64", "pumpkin-ARM64-macOS") => "pumpkin-ARM64-macOS",
+        ("linux", "x86_64", "pumpkin-X64-Linux") => "pumpkin-X64-Linux",
+        ("linux", "aarch64", "pumpkin-ARM64-Linux") => "pumpkin-ARM64-Linux",
+        _ => return None,
+    };
+
+    Some(format!("{}/{}", base, suffix))
 }

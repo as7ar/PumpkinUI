@@ -82,6 +82,7 @@ fn actions<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
 }
 
 fn config_summary<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+    let config_path = state.controller.config_path();
     column_spaced(
         10.,
         vec![
@@ -91,7 +92,7 @@ fn config_summary<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppS
                 .fill(theme::MUTED_TEXT)
                 .align(Alignment::Start)
                 .build(app),
-            text(id!(), state.config_path.text.as_str())
+            text(id!(), config_path.to_string_lossy().as_ref())
                 .font_size(12)
                 .fill(theme::TEXT)
                 .wrap()

@@ -96,7 +96,7 @@ fn config_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppS
             widgets::field_card(
                 "Arguments",
                 text_field(id!(), binding!(state.arguments))
-                    .hint_text("-jar server.jar nogui")
+                    .hint_text("Optional launch arguments")
                     .align(Alignment::Start)
                     .build(app)
                     .height(42.),

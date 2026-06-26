@@ -9,6 +9,7 @@ use std::time::{Duration, Instant};
 use crate::config::{load_or_default, save_config};
 use crate::error::{PumpkinError, Result};
 use crate::model::{PumpkinConfig, ServerLogLine, ServerSnapshot, ServerStatus, ServerStream};
+use crate::server::download::ensure_executable;
 use crate::util::resolve_path;
 
 const LOG_LIMIT: usize = 512;
@@ -112,11 +113,11 @@ impl ServerController {
             .unwrap_or_else(|| Path::new("."))
             .to_path_buf();
         let executable = resolve_path(&base_directory, &config.executable);
-        if !executable.exists() {
+        if let Err(error) = ensure_executable(&executable) {
             let mut inner = self.inner.lock().expect("server controller poisoned");
             inner.status = ServerStatus::Failed;
-            inner.last_error = Some(format!("missing executable: {}", executable.display()));
-            return Err(PumpkinError::MissingExecutable(executable));
+            inner.last_error = Some(error.to_string());
+            return Err(error);
         }
 
         let working_directory = resolve_path(&base_directory, &config.server_directory);

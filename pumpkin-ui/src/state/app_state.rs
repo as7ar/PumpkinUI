@@ -1,15 +1,11 @@
 use std::path::PathBuf;
 
 use haven::{ButtonState, TextState};
-use pumpkin_core::{
-    PumpkinConfig, ServerController, ServerSnapshot, ServerStatus,
-    config::{config_path, load_or_default},
-};
+use pumpkin_core::{PumpkinConfig, ServerController, ServerSnapshot, ServerStatus};
 
 #[derive(Debug, Clone)]
 pub struct AppState {
     pub controller: ServerController,
-    pub config_path: TextState,
     pub server_directory: TextState,
     pub executable: TextState,
     pub arguments: TextState,
@@ -25,16 +21,18 @@ pub struct AppState {
 impl AppState {
     pub fn new() -> Self {
         let base_directory = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
-        let config_file = config_path(&base_directory);
-        let (config, error_message) = match load_or_default(&config_file) {
-            Ok(config) => (config, None),
-            Err(error) => (PumpkinConfig::default(), Some(error.to_string())),
+        let config_file = base_directory.join("pumpkin.toml");
+        let (controller, error_message) = match ServerController::from_config_path(&config_file) {
+            Ok(controller) => (controller, None),
+            Err(error) => (
+                ServerController::new(config_file.clone(), PumpkinConfig::default()),
+                Some(error.to_string()),
+            ),
         };
-        let controller = ServerController::new(config_file.clone(), config.clone());
+        let config = controller.config();
 
         Self {
             controller,
-            config_path: TextState::new(config_file.to_string_lossy().to_string()),
             server_directory: TextState::new(config.server_directory.to_string_lossy().to_string()),
             executable: TextState::new(config.executable.to_string_lossy().to_string()),
             arguments: TextState::new(config.arguments.join(" ")),

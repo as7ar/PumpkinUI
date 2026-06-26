@@ -1,17 +1,14 @@
-name: Release
+name: CI Build
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - "main"
   workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-Dwarnings"
-
-permissions:
-  contents: write
 
 jobs:
   check:
@@ -95,28 +92,33 @@ jobs:
       - name: Build
         run: cargo build --release
 
-      - name: Prepare artifact
+      - name: Show build output
+        shell: bash
+        run: ls -la target/release
+
+      - name: Detect binary
         shell: bash
         run: |
-          mkdir -p dist
-          ls target/release
-          BIN="pumpkin-ui"
-          cp target/release/$BIN${{ matrix.exe }} \
-            dist/$BIN-${{ matrix.artifact }}${{ matrix.exe }}
+          echo "=== target/release ==="
+          ls -la target/release
 
-  release:
-    name: GitHub Release
-    needs: build
-    runs-on: ubuntu-latest
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            BIN=$(ls target/release | grep '^pumpkin-ui\.exe$' || true)
+          else
+            BIN=$(ls target/release | grep '^pumpkin-ui$' || true)
+          fi
 
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
+          if [ -z "$BIN" ]; then
+            echo "ERROR: binary not found"
+            ls target/release
+            exit 1
+          fi
+
+          echo "BIN=$BIN" >> $GITHUB_ENV
+          echo "Detected: $BIN"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: artifacts
-          merge-multiple: true
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: artifacts/*
+          name: ${{ matrix.artifact }}
+          path: target/release/${{ env.BIN }}

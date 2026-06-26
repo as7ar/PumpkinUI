@@ -20,6 +20,7 @@ pub struct ServerController {
     inner: Arc<Mutex<ServerControllerInner>>,
 }
 
+#[derive(Debug)]
 struct ServerControllerInner {
     config_path: PathBuf,
     config: PumpkinConfig,
@@ -30,6 +31,7 @@ struct ServerControllerInner {
     active_pid: Option<u32>,
 }
 
+#[derive(Debug)]
 struct ServerProcess {
     pid: u32,
     child: Arc<Mutex<Child>>,

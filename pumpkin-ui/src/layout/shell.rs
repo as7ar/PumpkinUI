@@ -16,17 +16,23 @@ pub fn app_shell<'a>(state: &'a AppState, app: &'a mut PaneState) -> View<'a, Ap
                     return None;
                 }
 
-                let content = row_spaced(
-                    18.,
-                    vec![
-                        sidebar(state, ctx).width(320.),
-                        pages::dashboard_body(state, ctx).expand(),
-                    ],
+                Some(
+                    row_spaced(
+                        18.,
+                        vec![
+                            {
+                                let sidebar_ui = sidebar(state, ctx).width(320.);
+                                sidebar_ui
+                            },
+                            {
+                                let main = pages::dashboard_body(state, ctx);
+                                main.expand()
+                            },
+                        ],
+                    )
+                    .pad(20.)
+                    .align(Align::Top),
                 )
-                .pad(20.)
-                .align(Align::Top);
-
-                Some(content)
             },
             app,
         )

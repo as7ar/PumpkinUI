@@ -13,29 +13,29 @@ pub fn dashboard_body<'a>(state: &'a AppState, app: &'a mut PaneState) -> View<'
     scroller(
         id!(),
         None,
-        move |index, _, _ctx| {
+        move |index, _, ctx| {
             if index != 0 {
                 return None;
             }
 
             Some(
-                column_spaced(
+                row_spaced(
                     18.,
                     vec![
-                        widgets::card(app),
+                        widgets::card(ctx),
                         column_spaced(
                             16.,
                             vec![
-                                header(state, app),
-                                config_section(state, app),
-                                runtime_section(state, app),
-                                log_section(state, app),
+                                header(state, ctx),
+                                config_section(state, ctx),
+                                runtime_section(state, ctx),
+                                log_section(state, ctx),
                             ],
                         )
                         .pad(16.),
                     ],
                 )
-                .expand(),
+                .align(Align::Top),
             )
         },
         app,

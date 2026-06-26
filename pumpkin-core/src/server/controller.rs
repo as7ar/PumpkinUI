@@ -15,7 +15,7 @@ use crate::util::resolve_path;
 const LOG_LIMIT: usize = 512;
 const STOP_TIMEOUT: Duration = Duration::from_secs(10);
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct ServerController {
     inner: Arc<Mutex<ServerControllerInner>>,
 }

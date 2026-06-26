@@ -10,33 +10,32 @@ pub fn dashboard<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppSt
 }
 
 pub fn dashboard_body<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+    let content = column_spaced(
+        18.,
+        vec![
+            widgets::card(app),
+            column_spaced(
+                16.,
+                vec![
+                    header(state, app),
+                    config_section(state, app),
+                    runtime_section(state, app),
+                    log_section(state, app),
+                ],
+            )
+            .pad(16.),
+        ],
+    );
+
     scroller(
         id!(),
         None,
-        move |index, _, ctx| {
+        move |index, _, _ctx| {
             if index != 0 {
                 return None;
             }
 
-            Some(
-                column_spaced(
-                    18.,
-                    vec![
-                        widgets::card(app),
-                        column_spaced(
-                            16.,
-                            vec![
-                                header(state, app),
-                                config_section(state, app),
-                                runtime_section(state, app),
-                                log_section(state, app),
-                            ],
-                        )
-                        .pad(16.),
-                    ],
-                )
-                .expand(),
-            )
+            Some(content.clone().expand())
         },
         app,
     )

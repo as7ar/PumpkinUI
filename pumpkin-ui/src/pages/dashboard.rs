@@ -10,21 +10,35 @@ pub fn dashboard<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppSt
 }
 
 pub fn dashboard_body<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
-    column_spaced(
-        18.,
-        vec![
-            widgets::card(app),
-            column_spaced(
-                16.,
-                vec![
-                    header(state, app),
-                    config_section(state, app),
-                    runtime_section(state, app),
-                    log_section(state, app),
-                ],
+    scroller(
+        id!(),
+        None,
+        move |index, _, ctx| {
+            if index != 0 {
+                return None;
+            }
+
+            Some(
+                column_spaced(
+                    18.,
+                    vec![
+                        widgets::card(app),
+                        column_spaced(
+                            16.,
+                            vec![
+                                header(state, app),
+                                config_section(state, app),
+                                runtime_section(state, app),
+                                log_section(state, app),
+                            ],
+                        )
+                        .pad(16.),
+                    ],
+                )
+                .expand(),
             )
-            .pad(16.),
-        ],
+        },
+        app,
     )
 }
 
@@ -36,13 +50,13 @@ fn header<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
             column_spaced(
                 6.,
                 vec![
-                    text(id!(), "Pumpkin server manager")
+                    text(id!(), "Pumpkin Server UI")
                         .font_size(28)
                         .font_weight(FontWeight::BOLD)
                         .fill(theme::TEXT)
                         .align(Alignment::Start)
                         .build(app),
-                    text(id!(), "Control the server process from a small Haven UI")
+                    text(id!(), "Control the server process")
                         .font_size(13)
                         .fill(theme::MUTED_TEXT)
                         .align(Alignment::Start)
@@ -65,7 +79,7 @@ fn config_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppS
         vec![
             widgets::section_title(
                 "Configuration",
-                Some("Edit the pumpkin.toml values used by the core"),
+                Some("Edit the pumpkin-ui.toml values used by the core"),
                 app,
             ),
             row_spaced(

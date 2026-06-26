@@ -36,7 +36,7 @@ enum UiEvent {
 impl AppState {
     pub fn new() -> Self {
         let base_directory = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
-        let config_file = base_directory.join("pumpkin.toml");
+        let config_file = base_directory.join("pumpkin-ui.toml");
         let (event_tx, event_rx) = mpsc::channel();
         let (controller, error_message) = match ServerController::from_config_path(&config_file) {
             Ok(controller) => (controller, None),

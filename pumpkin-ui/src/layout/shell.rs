@@ -5,42 +5,32 @@ use crate::state::AppState;
 use crate::theme;
 use crate::widgets;
 
-pub fn app_shell<'a>(state: &'a AppState, app: &'a mut PaneState) -> View<'a, AppState> {
+pub fn app_shell<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     stack(vec![
         rect(id!()).fill(theme::BACKGROUND).build(app).expand(),
         scroller(
             id!(),
             None,
-            move |index, _, ctx| {
-                if index != 0 {
-                    return None;
-                }
-
-                Some(
-                    row_spaced(
-                        18.,
-                        vec![
-                            {
-                                let sidebar_ui = sidebar(state, ctx).width(320.);
-                                sidebar_ui
-                            },
-                            {
-                                let main = pages::dashboard_body(state, ctx);
-                                main.expand()
-                            },
-                        ],
-                    )
-                    .pad(20.)
-                    .align(Align::Top),
-                )
-            },
+            move |index, _, ctx| (index == 0).then(|| shell_content(state, ctx)),
             app,
         )
         .expand(),
     ])
 }
 
-fn sidebar<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+fn shell_content<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
+    row_spaced(
+        18.,
+        vec![
+            sidebar(state, app).width(320.),
+            pages::dashboard_body(state, app).expand(),
+        ],
+    )
+    .pad(20.)
+    .align(Align::Top)
+}
+
+fn sidebar<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     stack(vec![
         widgets::card(app),
         column_spaced(
@@ -56,7 +46,7 @@ fn sidebar<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
     ])
 }
 
-fn status_summary<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+fn status_summary<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     let snapshot = state.controller.status();
     column_spaced(
         10.,
@@ -81,7 +71,7 @@ fn status_summary<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppS
     )
 }
 
-fn actions<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+fn actions<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     row_spaced(
         10.,
         vec![
@@ -101,7 +91,7 @@ fn actions<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
     )
 }
 
-fn config_summary<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+fn config_summary<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     let config_path = state.controller.config_path();
     column_spaced(
         10.,

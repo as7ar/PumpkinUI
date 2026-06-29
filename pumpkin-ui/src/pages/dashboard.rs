@@ -5,46 +5,40 @@ use crate::state::AppState;
 use crate::theme;
 use crate::widgets;
 
-pub fn dashboard<'a>(state: &'a AppState, app: &'a mut haven::PaneState) -> View<'a, AppState> {
+pub fn dashboard<'a, 'b>(state: &'a AppState, app: &'b mut haven::PaneState) -> View<'a, AppState> {
     layout::app_shell(state, app)
 }
 
-pub fn dashboard_body<'a>(
-    state: &'a AppState,
-    app: &'a mut PaneState,
-) -> View<'a, AppState> {
+pub fn dashboard_body<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     scroller(
         id!(),
         None,
-        move |index, _, ctx| {
-            if index != 0 {
-                return None;
-            }
-
-            let content = row_spaced(
-                18.,
-                vec![
-                    widgets::card(ctx),
-                    column_spaced(
-                        16.,
-                        vec![
-                            header(state, ctx),
-                            config_section(state, ctx),
-                            runtime_section(state, ctx),
-                            log_section(state, ctx),
-                        ],
-                    )
-                    .pad(16.),
-                ],
-            )
-            .align(Align::Top);
-
-            Some(content)
-        },
+        move |index, _, ctx| (index == 0).then(|| dashboard_content(state, ctx)),
         app,
     )
 }
-fn header<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+
+fn dashboard_content<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
+    row_spaced(
+        18.,
+        vec![
+            widgets::card(app),
+            column_spaced(
+                16.,
+                vec![
+                    header(state, app),
+                    config_section(state, app),
+                    runtime_section(state, app),
+                    log_section(state, app),
+                ],
+            )
+            .pad(16.),
+        ],
+    )
+    .align(Align::Top)
+}
+
+fn header<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     let snapshot = state.controller.status();
     row_spaced(
         12.,
@@ -75,7 +69,7 @@ fn header<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
     )
 }
 
-fn config_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+fn config_section<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     column_spaced(
         12.,
         vec![
@@ -139,7 +133,7 @@ fn config_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppS
     )
 }
 
-fn runtime_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+fn runtime_section<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     let snapshot = state.controller.status();
     column_spaced(
         12.,
@@ -171,7 +165,7 @@ fn runtime_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, App
     )
 }
 
-fn log_section<'a>(state: &'a AppState, app: &mut PaneState) -> View<'a, AppState> {
+fn log_section<'a, 'b>(state: &'a AppState, app: &'b mut PaneState) -> View<'a, AppState> {
     let logs = state.logs.clone();
     column_spaced(
         12.,
